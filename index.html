@@ -58,37 +58,22 @@
     <top
       v-bind:title="title"
       v-bind:subtitle="subtitle"
+      v-bind:author="author"
+      v-bind:date="date"
       ></top>
 
     <!-- Main Content -->
-    <div class="container">
-      <div class="row">
-        <div id="postsApp" class="col-lg-8 col-md-10 mx-auto">
-          <div v-for="post in posts">
-            <div class="post-preview">
-              <a href="post.html">
-                <h2 class="post-title">
-                  {{post.title}}
-                </h2>
-                <h3 class="post-subtitle">
-                    {{post.subtitle}}
-                </h3>
-              </a>
-              <p class="post-meta">Posted by
-                <a href="#">{{post.by}}</a>
-                on {{post.date}}</p>
-            </div>
-            <hr>
-          </div>
-          <!-- Pager -->
-          <div class="clearfix">
-            <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
-          </div>
-        </div>
-      </div>
+    <div v-if="pageType === 'overview'">
+        <posts-overview
+          v-bind:posts="posts"
+        ></posts-overview>
     </div>
-
-    <hr>
+    <div v-else-if="pageType === 'post'">
+      <post-itself
+        v-bind:post="activePost"
+      ></post-itself>
+    </div>
+    
   </div>
 
   <!-- Footer -->

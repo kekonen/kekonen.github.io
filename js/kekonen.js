@@ -1,8 +1,15 @@
 let title = "My 1337 blog"
 let subtitle = "Welcome"
+let pageType = 'overview'
+
+let date = null
+let author = null
+
+let activePost = null
 
 let posts = [
-  {href: "post.html", title: "Kek", subtitle: "LOL", author: "me", date: 'May 22, 2019'},
+  {id: 0, title: "Kek", subtitle: "LOL", author: "me", date: 'May 22, 2019', content: 'Hello, thats me'},
+  {id: 1, title: "KEK!", subtitle: "LOL@", author: "me11", date: 'May 23, 2019', content: 'Hello, thats me'},
 ]
 
 let postUrls = ['https://raw.githubusercontent.com/kekonen/kekonen.github.io/master/content/post1.md']
@@ -17,7 +24,7 @@ postUrls.forEach(url => {
 
     let title = headers.match(/Title: (.+)/)
     let subtitle = headers.match(/Subtitle: (.+)/)
-    let author = headers.match(/By: (.+)/)
+    let author = headers.match(/Author: (.+)/)
     let date = headers.match(/Date: (.+)/)
 
     title = title ? title[1] : 'No title' 
@@ -25,8 +32,7 @@ postUrls.forEach(url => {
     author = author ? author[1] : 'No author' 
     date = date ? date[1] : 'No date'
 
-    posts.push({href: "post.html", title, subtitle, author, date})
-
+    posts.push({id: posts.length, title, subtitle, author, date, content})
   })
 })
 
@@ -42,7 +48,15 @@ Vue.component('top', {
           <div class="col-lg-8 col-md-10 mx-auto">
             <div class="site-heading">
               <h1>{{title}}</h1>
-              <span class="subheading">{{subtitle}}</span>
+              <div v-if="date">
+                <h2 class="subheading">{{subtitle}}</h2>
+                <span class="meta">Posted by
+                  <a href="#">{{author}}</a>
+                  on {{date}}</span>
+              </div>
+              <div v-else>
+                <span class="subheading">{{subtitle}}</span>
+              </div>
             </div>
           </div>
         </div>
@@ -54,26 +68,34 @@ Vue.component('top', {
 Vue.component('posts-overview', {
   props: ['posts'],
   template: `
-  <div id="postsApp" class="col-lg-8 col-md-10 mx-auto">
+  <div class="container">
+      <div class="row">
+        <div id="postsApp" class="col-lg-8 col-md-10 mx-auto">
 
-    <post-preview
-      v-for="post in posts"
-      v-bind:post="post"
-    ></post-preview>
+          <post-preview
+            v-for="post in posts"
+            v-bind:post="post"
+            v-bind:key="post.id"
+          ></post-preview>
 
-  <!-- Pager -->
-  <div class="clearfix">
-    <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
+          <!-- Pager -->
+          <div class="clearfix">
+            <a class="btn btn-primary float-right" href="#">Older Posts &rarr;</a>
+          </div>
+        </div>
+      </div>
   </div>
-</div>
+
+  </hr>
+
   `
 })
 
 Vue.component('post-preview', {
   props: ['post'],
   template: `
-    <div class="post-preview">
-      <a href="post.html">
+    <div v-on:click="set_post(post.id)" class="post-preview">
+      <a href="#">
         <h2 class="post-title">
           {{post.title}}
         </h2>
@@ -85,14 +107,21 @@ Vue.component('post-preview', {
         <a href="#">{{post.author}}</a>
         on {{post.date}}</p>
     </div>
-    <hr>
-  `
+    </hr>
+  `,
+  methods: {
+    set_post: function(id) {
+      console.log(id)
+      app.set_post(id)
+    }
+  }
 })
 
 
 Vue.component('post-itself', {
+  props: ['post'],
   template: `<div class="col-lg-8 col-md-10 mx-auto">
-  <p>{{content}}</p>
+  <p>{{post.content}}</p>
 
   <p>For those who have seen the Earth from space, and for the hundreds and perhaps thousands more who will, the experience most certainly changes your perspective. The things that we share in our world are far more valuable than those which divide us.</p>
 
@@ -129,10 +158,24 @@ Vue.component('post-itself', {
 var app = new Vue({
   el: '#app',
   data: {
-    pageType: 'overview',
+    pageType,
+    date,
+    author,
     title,
     subtitle,
-    posts
+    posts,
+    activePost
+  },
+  methods: {
+    set_post: function(postId) {
+      let post = this.posts[postId]
+      this.pageType = 'post';
+      this.activePost = post
+      this.author = post.author
+      this.date = post.date
+      this.title = post.title
+      this.subtitle = post.subtitle
+    }
   }
 })
 
