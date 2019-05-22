@@ -17,7 +17,7 @@ postUrls.forEach(url => {
 
     let title = headers.match(/Title: (.+)/)
     let subtitle = headers.match(/Subtitle: (.+)/)
-    let author = headers.match(/Author: (.+)/)
+    let author = headers.match(/By: (.+)/)
     let date = headers.match(/Date: (.+)/)
 
     title = title ? title[1] : 'No title' 
@@ -25,7 +25,7 @@ postUrls.forEach(url => {
     author = author ? author[1] : 'No author' 
     date = date ? date[1] : 'No date'
 
-    posts.push({href: "post.html", title, subtitle, by, date})
+    posts.push({href: "post.html", title, subtitle, author, date})
 
   })
 })
