@@ -1,7 +1,8 @@
-const posts = superagent.get('https://raw.githubusercontent.com/kekonen/kekonen.github.io/master/content/post1.md').end((err, res) => {
+superagent.get('https://raw.githubusercontent.com/kekonen/kekonen.github.io/master/content/post1.md').end((err, res) => {
+  console.log(err)
+
   console.log(res)
-}).catch(e => {
-  console.log(e)
+
 })
 
 
